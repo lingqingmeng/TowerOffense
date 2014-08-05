@@ -1,0 +1,53 @@
+﻿@model PagedList.IPagedList<TowerSite.Models.Leaderboard>
+@using PagedList;
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+
+@{
+    ViewBag.Title = "Leaderboard";
+}
+
+<h2>Leaderboard</h2>
+@using (Html.BeginForm("Index", "Leaderboard", FormMethod.Get))
+{
+    <p>
+        Find by Username: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Search" />
+    </p>
+} 
+<table class="table">
+    <tr>
+        <th>
+            Rank
+        </th>
+        <th>
+            Name
+        </th>
+        <th>
+            ELO
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rank)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LinearELO)
+            </td>
+        </tr>
+    }
+
+</table>
+<br />
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
